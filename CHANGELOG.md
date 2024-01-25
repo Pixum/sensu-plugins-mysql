@@ -5,6 +5,10 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 
 ## [Unreleased]
 
+## [3.3.0] - 2024-01-25
+### Changed
+- check-mysql-replication-status.rb: Add support for checking Slave_SQL_Running only to distinguish outages from planned jobs (like Acronis Backups)
+
 ## [3.2.0] - 2020-08-26
 ### Changed
 - Bump sensu-plugin dependency from ~> 1.2 to ~> 4.0
@@ -168,7 +172,8 @@ This CHANGELOG follows the format listed [here](https://github.com/sensu-plugins
 ### Added
 - initial release
 
-[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.2.0...HEAD
+[Unreleased]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.3.0...HEAD
+[3.3.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.1...3.2.0
 [3.1.1]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/sensu-plugins/sensu-plugins-mysql/compare/3.0.0...3.1.0

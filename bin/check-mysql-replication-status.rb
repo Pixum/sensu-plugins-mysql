@@ -95,6 +95,13 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
          # #YELLOW
          proc: lambda { |s| s.to_i } # rubocop:disable Style/Lambda
 
+  option :ignore_sql_running,
+          short: '-I',
+          long: '--ignore-sql-running',
+          description: 'Ignore Slave_SQL_Running status which on its own indicates a planned stop, like a backup job',
+          boolean: true,
+          default: false
+
   def detect_replication_status?(row)
     %w[
       Slave_IO_State
@@ -106,11 +113,15 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
     ].all? { |key| row.key? key }
   end
 
-  def slave_running?(row)
+  def slave_full_running?(row)
     %w[
       Slave_IO_Running
       Slave_SQL_Running
     ].all? { |key| row[key] =~ /Yes/ }
+  end
+
+  def slave_io_running?(row)
+    row['Slave_IO_Running'] =~ /Yes/
   end
 
   def run
@@ -143,7 +154,11 @@ class CheckMysqlReplicationStatus < Sensu::Plugin::Check::CLI
         results.each_hash do |row|
           warn "couldn't detect replication status" unless detect_replication_status?(row)
 
-          slave_running = slave_running?(row)
+          slave_running = if config[:ignore_sql_running]
+                            slave_io_running?(row)
+                          else
+                            slave_full_running?(row)
+                          end
 
           output = if db_conn.nil?
                      'Slave not running!'
